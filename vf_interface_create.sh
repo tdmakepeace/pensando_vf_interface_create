@@ -22,12 +22,12 @@ fi
 
 
 if [ "${out_file}" != "" ]; then
-    if [ -f "${out_file}" ] || [ -d "${out_file}" ]; then
+    if [ -f "${out_file}.set" ] || [ -f "${out_file}.yaml" ] || [ -d "${out_file}" ]; then
         echo Error:
         echo "Filename: ${out_file} already exists"
-
         exit 1
     fi
+    
 fi
 
 
@@ -79,9 +79,10 @@ if [ "${resultint}" != "" ] ;then
     x=1
 
     echo "The following command must be run as root, once the driver loaded"
-    echo "and the SRIOV enabled on PSM"
+    echo "and the SRIOV enabled on PSM, "
     echo "\"echo ${number_vf} > /sys/class/net/${inter_name}/device/sriov_numvfs\""
-
+    echo "To set persistent use the yaml example output"
+    echo ""
     # seperate on the 6th octet of the mac-address
     echo "Base Mac-address: ${base_mac}"
     echo ""
@@ -91,6 +92,12 @@ if [ "${resultint}" != "" ] ;then
     #convrt the last octet to dec
     hex="$post"
     hextodeccon=$(hextodec "${hex}")
+
+    if [ "${out_file}" != "" ]; then
+        echo "    enp20s0:" > ${out_file}.yaml
+        echo "      virtual-function-count: ${number_vf}" >> ${out_file}.yaml
+    fi
+
     
     while [ $x -le ${number_vf} ]
         do
@@ -111,9 +118,12 @@ if [ "${resultint}" != "" ] ;then
 
             if [ "${out_file}" != "" ]; then
                # echo "ip link set ens1 vf 0 mac $pre:$dectohexcon" >> ${out_file}
-                echo "ip link set ${inter_name} vf 0 mac $pre:$dectohexcon" >> ${out_file}
+                echo "ip link set ${inter_name} vf $(( $x - 1 )) mac $pre:$dectohexcon" >> ${out_file}.set
+                echo "    ${inter_name}v$(( $x - 1 )):" >> ${out_file}.yaml
+                echo "      link: ${inter_name}" >> ${out_file}.yaml
+                echo "      macaddress: $pre:$dectohexcon" >> ${out_file}.yaml
             else
-                echo "ip link set ${inter_name} vf 0 mac $pre:$dectohexcon" 
+                echo "ip link set ${inter_name} vf $(( $x - 1 )) mac $pre:$dectohexcon" 
             fi
 
 
