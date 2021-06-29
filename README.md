@@ -13,13 +13,15 @@ vf_interface_create.sh <name of interface> <number of VF> <base mac-address> <ou
 
 # Useful commands
   
-  building the driver on ubuntu and replacing the inboxed driver
-```
+##  building the driver on ubuntu and replacing the inboxed driver
+check the version of the driver running.
+  ```
 dmesg | grep ionic
 ``` 
-### build the driver
+
+  ### build the driver
 upload the driver bundle.
-extract, and then run the make from the 
+extract, and then run the make 
 
 
 ### copy the new build driver across.
@@ -28,6 +30,16 @@ cp eth/ionic/ionic.ko /lib/modules/$(uname -r)/kernel/drivers/net/ethernet/pensa
 depmod
 update-initramfs -u
 ```
+  
+### if ubuntu or Debian to fix the interface renaming issue.
+  ```
+  echo 'SUBSYSTEM=="net", ENV{ID_VENDOR_ID}=="0x1dd8", NAME="$env{ID_NET_NAME_PATH}"' > /etc/udev/rules.d/81-pensando-net.rules
+  ```
+  
+### to create the vf interfaces
+  ```
+  echo 16 > /sys/class/net/enp20s0/device/sriov_numvfs
+  ```
 
   #### check the vf created.
 `ls -l /sys/class/net/enp20s0/device/virtfn*`
