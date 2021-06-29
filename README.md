@@ -8,6 +8,8 @@ vf_interface_create.sh <name of interface> <number of VF> <base mac-address> <ou
 \<number of VF> -- number of vf interfaces you want to configure normally 16 <br>
 \<base mac-address> -- starting MAC address you want to assing to the VF interfaces (script will increment the last octet<br>
 \<output file> -- (optional) output to file if you are running from a central location, or screen is no output defined <br>
+  
+If set to output, two files are created ".yaml" and ".set". The ".yaml" provides the expected output if you are using netplan to configure the server, ".set" is the output if you want to set within the current session.
  
   <br>
 
