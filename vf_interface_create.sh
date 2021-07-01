@@ -119,11 +119,17 @@ if [ "${resultint}" != "" ] ;then
             if [ "${out_file}" != "" ]; then
                # echo "ip link set ens1 vf 0 mac $pre:$dectohexcon" >> ${out_file}
                 echo "ip link set ${inter_name} vf $(( $x - 1 )) mac $pre:$dectohexcon" >> ${out_file}.set
+                echo "ip link set ${inter_name} vf $(( $x - 1 )) trust on" >> ${out_file}.set
+                echo "ip link set ${inter_name} vf $(( $x - 1 )) state auto" >> ${out_file}.set
+
                 echo "    ${inter_name}v$(( $x - 1 )):" >> ${out_file}.yaml
                 echo "      link: ${inter_name}" >> ${out_file}.yaml
                 echo "      macaddress: $pre:$dectohexcon" >> ${out_file}.yaml
             else
                 echo "ip link set ${inter_name} vf $(( $x - 1 )) mac $pre:$dectohexcon" 
+                echo "ip link set ${inter_name} vf $(( $x - 1 )) trust on" 
+                echo "ip link set ${inter_name} vf $(( $x - 1 )) state auto" 
+
             fi
 
 
