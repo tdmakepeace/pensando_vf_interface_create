@@ -82,7 +82,7 @@ if [ "${resultint}" != "" ] ;then
     echo "and the SRIOV enabled on PSM, "
     echo "\"echo ${number_vf} > /sys/class/net/${inter_name}/device/sriov_numvfs\""
     echo "To set persistent use the yaml example output"
-    echo ""
+    echo "Note: investigating why the yaml sets the VF and Mac-address, but not presented to the DSC."
     # seperate on the 6th octet of the mac-address
     echo "Base Mac-address: ${base_mac}"
     echo ""
@@ -94,7 +94,7 @@ if [ "${resultint}" != "" ] ;then
     hextodeccon=$(hextodec "${hex}")
 
     if [ "${out_file}" != "" ]; then
-        echo "    enp20s0:" > ${out_file}.yaml
+        echo "    ${inter_name}:" > ${out_file}.yaml
         echo "      virtual-function-count: ${number_vf}" >> ${out_file}.yaml
     fi
 
