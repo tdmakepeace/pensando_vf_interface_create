@@ -78,11 +78,8 @@ if [ "${resultint}" != "" ] ;then
     # for the while loop for the VF interface creation. 
     x=1
 
-    echo "The following command must be run as root, once the driver loaded"
-    echo "and the SRIOV enabled on PSM, "
-    echo "\"echo ${number_vf} > /sys/class/net/${inter_name}/device/sriov_numvfs\""
-    echo "To set persistent use the yaml example output"
     echo "Note: investigating why the yaml sets the VF and Mac-address, but not presented to the DSC."
+ 
     # seperate on the 6th octet of the mac-address
     echo "Base Mac-address: ${base_mac}"
     echo ""
@@ -96,7 +93,10 @@ if [ "${resultint}" != "" ] ;then
     if [ "${out_file}" != "" ]; then
         echo "    ${inter_name}:" > ${out_file}.yaml
         echo "      virtual-function-count: ${number_vf}" >> ${out_file}.yaml
-	echo "#!/bin/bash" > ${out_file}.sh
+
+	echo "#!/bin/bash
+echo 16 > /sys/class/net/${inter_name}/device/sriov_numvfs" > ${out_file}.sh
+
 	echo "[Unit]
 Description=${out_file}sriov service
 
@@ -136,7 +136,7 @@ WantedBy=multi-user.target" > ${out_file}.service
                 echo "      link: ${inter_name}" >> ${out_file}.yaml
                 echo "      macaddress: $pre:$dectohexcon" >> ${out_file}.yaml
             else
-                echo ${number_vf} > /sys/class/net/${inter_name}/device/sriov_numvfs
+                echo "echo 16 > /sys/class/net/${inter_name}/device/sriov_numvfs"
                 echo "ip link set ${inter_name} vf $(( $x - 1 )) mac $pre:$dectohexcon" 
                 echo "ip link set ${inter_name} vf $(( $x - 1 )) trust on" 
                 echo "ip link set ${inter_name} vf $(( $x - 1 )) state auto" 
