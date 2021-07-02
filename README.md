@@ -101,6 +101,10 @@ networkctl status enp20s0.2
   NOTE: the set option does not survive a reboot, So you need to build a service to rerun the commands on boot up. <br>
   the <output file name>.service file need to be copied to the "/etc/systemd/system/" folder with execute permissions for root "chmod u+x <output file name>.sh"
   
+  ```
+systemctl start enp20s0.service
+systemctl enable enp20s0.service
+  ```
   
   ### In your VM. 
   You need to load the Pensnado driver that support VF, so repeat the steps for the driver build within the VM.
