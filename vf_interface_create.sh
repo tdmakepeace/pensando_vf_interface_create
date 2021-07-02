@@ -97,6 +97,15 @@ if [ "${resultint}" != "" ] ;then
         echo "    ${inter_name}:" > ${out_file}.yaml
         echo "      virtual-function-count: ${number_vf}" >> ${out_file}.yaml
 	echo "#!/bin/bash" > ${out_file}.sh
+	echo "[Unit]
+Description=${out_file}sriov service
+
+[Service]
+ExecStart=/root/${out_file}.sh
+
+[Install]
+WantedBy=multi-user.target" > ${out_file}.service
+
     fi
 
     
@@ -127,6 +136,7 @@ if [ "${resultint}" != "" ] ;then
                 echo "      link: ${inter_name}" >> ${out_file}.yaml
                 echo "      macaddress: $pre:$dectohexcon" >> ${out_file}.yaml
             else
+                echo ${number_vf} > /sys/class/net/${inter_name}/device/sriov_numvfs
                 echo "ip link set ${inter_name} vf $(( $x - 1 )) mac $pre:$dectohexcon" 
                 echo "ip link set ${inter_name} vf $(( $x - 1 )) trust on" 
                 echo "ip link set ${inter_name} vf $(( $x - 1 )) state auto" 
