@@ -9,7 +9,8 @@ vf_interface_create.sh <name of interface> <number of VF> <base mac-address> <ou
 \<base mac-address> -- starting MAC address you want to assing to the VF interfaces (script will increment the last octet<br>
 \<output file> -- (optional) output to file if you are running from a central location, or screen is no output defined <br>
   
-If set to output, two files are created ".yaml" and ".set". The ".yaml" provides the expected output if you are using netplan to configure the server, ".set" is the output if you want to set within the current session.
+If set to output, three files are created ".yaml", ".set"and .service. The ".yaml" provides the expected output if you are using netplan to configure the server, ".set" is the output if you want to set within the current session. <br>
+  Note: currently netplan does not get the interface Mac-addresses registered on the DSC. <br>
   
   #### Example
   ```
@@ -73,10 +74,18 @@ grub-mkconfig -o /boot/grub/grub.cfg
 reboot
 
   ### to create the vf interfaces
-  To set for the current session, or use the netplan output of the script.
-  
+  To set for the current session, use output of the script ".sh"
+
+  Example
   ```
-  echo 16 > /sys/class/net/enp20s0/device/sriov_numvfs
+echo 16 > /sys/class/net/enp20s0/device/sriov_numvfs
+ip link set enp20s0 vf 0 mac 00:ae:cd:43:01:01
+ip link set enp20s0 vf 0 trust on
+ip link set enp20s0 vf 0 state auto
+ip link set enp20s0 vf 1 mac 00:ae:cd:43:02:01
+ip link set enp20s0 vf 1 trust on
+ip link set enp20s0 vf 1 state auto
+....
   ```
 
   #### check the vf created.
@@ -88,8 +97,9 @@ lshw -c network -businfo
 networkctl status enp20s0.2
  ```
   
-  To set the MAC address of the VF interface use the Set option of the netplan output of the script.
-  NOTE: the set option does not survive a reboot, and i am working on a issue where the Netplan sets the mac-address, but it does not get passed to the DSC so currently both options are needed.
+  To set the MAC address of the VF interface use the Set option output of the script ".sh". <br>
+  NOTE: the set option does not survive a reboot, So you need to build a service to rerun the commands on boot up. <br>
+  the <output file name>.service file need to be copied to the "/etc/systemd/system/" folder with execute permissions for root "chmod u+x <output file name>.sh"
   
   
   ### In your VM. 
