@@ -54,7 +54,22 @@ dmesg | grep ionic
   echo 'SUBSYSTEM=="net", ENV{ID_VENDOR_ID}=="0x1dd8", NAME="$env{ID_NET_NAME_PATH}"' > /etc/udev/rules.d/81-pensando-net.rules
   ```
   
-### to create the vf interfaces
+ ### enable SRIOV pass through to the VM
+  Edit the grub or grub2
+```
+sudo -i
+vi /etc/default/grub
+```
+add/edit line - GRUB_CMDLINE_LINUX_DEFAULT="intel_iommu=on iommu=pt"
+```
+update-grub
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+reboot
+
+  ### to create the vf interfaces
+  To set for the current session, or use the netplan output of the script.
+  
   ```
   echo 16 > /sys/class/net/enp20s0/device/sriov_numvfs
   ```
@@ -68,18 +83,29 @@ lshw -c network -businfo
 networkctl status enp20s0.2
  ```
   
+  To set the MAC address of the VF interface use the Set option of the netplan output of the script.
+  NOTE: the set option does not survive a reboot, and i am working on a issue where the Netplan sets the mac-address, but it does not get passed to the DSC so currently both options are needed.
   
- ### enable SRIOV pass through to the VM
+  
+  ### In your VM. 
+  You need to load the Pensnado driver that support VF, so repeat the steps for the driver build within the VM.
+  IF you are running the same OS on the host as the VM you can copy the ionic.ko file across rather than build from scratch.
+  
+  ```
+dmesg | grep ionic
+``` 
+
+###  copy the new build driver across.
 ```
-sudo -i
-edit /etc/default/grub
+cp eth/ionic/ionic.ko /lib/modules/$(uname -r)/kernel/drivers/net/ethernet/pensando/ionic/ionic.ko
+depmod
+update-initramfs -u
 ```
-add/edit line - GRUB_CMDLINE_LINUX_DEFAULT="intel_iommu=on iommu=pt"
+  reboot host and validate the driver installed. 
 ```
-update-grub
-grub-mkconfig -o /boot/grub/grub.cfg
+dmesg | grep ionic
 ```
-reboot
+  
   
   
 #  Disclaimer
