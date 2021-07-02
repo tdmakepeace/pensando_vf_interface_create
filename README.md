@@ -34,7 +34,6 @@ extract, and then run the make
   <br>
   
 ###  Dependencies
-  <br>
   
 ```
 sudo apt install make
@@ -100,13 +99,18 @@ networkctl status enp20s0.2
   To set the MAC address of the VF interface use the Set option output of the script ".sh". <br>
   NOTE: the set option does not survive a reboot, So you need to build a service to rerun the commands on boot up. <br>
   the <output file name>.service file need to be copied to the "/etc/systemd/system/" folder with execute permissions for root "chmod u+x <output file name>.sh"
+  <br>  <br>
   
+Example
   ```
+cp /home/tmakepeace/scripts/enp20s0.sh .
+chmod u+x enp20s0.sh
+cp /home/tmakepeace/scripts/enp20s0.service /etc/systemd/system/enp20s0.service
 systemctl start enp20s0.service
 systemctl enable enp20s0.service
   ```
-  
-  ### In your VM. 
+  <br>  <br>
+  ## In your VM. 
   You need to load the Pensnado driver that support VF, so repeat the steps for the driver build within the VM.
   IF you are running the same OS on the host as the VM you can copy the ionic.ko file across rather than build from scratch.
   
