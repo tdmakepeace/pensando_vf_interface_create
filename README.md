@@ -10,7 +10,12 @@ vf_interface_create.sh <name of interface> <number of VF> <base mac-address> <ou
 \<output file> -- (optional) output to file if you are running from a central location, or screen is no output defined <br>
   
 If set to output, two files are created ".yaml" and ".set". The ".yaml" provides the expected output if you are using netplan to configure the server, ".set" is the output if you want to set within the current session.
- 
+  
+  #### Example
+  ```
+  ./vf_interface_create.sh enp20s0 16 00:ae:cd:43:01:01 enp20s0
+  ./vf_interface_create.sh enp21s0 16 00:ae:cd:43:02:01 enp21s0
+  ```
   <br>
 
 # Useful notes and commands
