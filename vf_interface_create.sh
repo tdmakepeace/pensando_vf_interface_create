@@ -22,7 +22,7 @@ fi
 
 
 if [ "${out_file}" != "" ]; then
-    if [ -f "${out_file}.set" ] || [ -f "${out_file}.yaml" ] || [ -d "${out_file}" ]; then
+    if [ -f "${out_file}.sh" ] || [ -f "${out_file}.yaml" ] || [ -d "${out_file}" ]; then
         echo Error:
         echo "Filename: ${out_file} already exists"
         exit 1
@@ -96,6 +96,7 @@ if [ "${resultint}" != "" ] ;then
     if [ "${out_file}" != "" ]; then
         echo "    ${inter_name}:" > ${out_file}.yaml
         echo "      virtual-function-count: ${number_vf}" >> ${out_file}.yaml
+	echo "#!/bin/bash" > ${out_file}.sh
     fi
 
     
@@ -118,9 +119,9 @@ if [ "${resultint}" != "" ] ;then
 
             if [ "${out_file}" != "" ]; then
                # echo "ip link set ens1 vf 0 mac $pre:$dectohexcon" >> ${out_file}
-                echo "ip link set ${inter_name} vf $(( $x - 1 )) mac $pre:$dectohexcon" >> ${out_file}.set
-                echo "ip link set ${inter_name} vf $(( $x - 1 )) trust on" >> ${out_file}.set
-                echo "ip link set ${inter_name} vf $(( $x - 1 )) state auto" >> ${out_file}.set
+                echo "ip link set ${inter_name} vf $(( $x - 1 )) mac $pre:$dectohexcon" >> ${out_file}.sh
+                echo "ip link set ${inter_name} vf $(( $x - 1 )) trust on" >> ${out_file}.sh
+                echo "ip link set ${inter_name} vf $(( $x - 1 )) state auto" >> ${out_file}.sh
 
                 echo "    ${inter_name}v$(( $x - 1 )):" >> ${out_file}.yaml
                 echo "      link: ${inter_name}" >> ${out_file}.yaml
